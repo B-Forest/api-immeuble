@@ -11,8 +11,4 @@ export class TenantEntity extends PersonEntity {
   
   @ManyToOne(() => ApartmentEntity, (apartment) => apartment.tenants)
   apartment: ApartmentEntity;
-
-  @OneToOne(()=> PersonEntity)
-  @JoinColumn()
-  person:PersonEntity;
 }

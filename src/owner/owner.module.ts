@@ -9,6 +9,6 @@ import { PersonModule } from 'src/person/person.module';
   imports:[PersonModule,TypeOrmModule.forFeature([OwnerEntity])],
   controllers: [OwnerController],
   providers: [OwnerService],
-  exports:[OwnerModule],
+  exports:[OwnerService],
 })
 export class OwnerModule {}

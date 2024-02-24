@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
 import { OwnerEntity } from './entities/owner.entity';
@@ -24,26 +24,24 @@ export class OwnerService extends BaseService<OwnerEntity> {
   async create(createOwnerDto: CreateOwnerDto): Promise<OwnerEntity> {
     const owner:OwnerEntity = new OwnerEntity();
     Object.assign(owner, createOwnerDto);
-    const person:PersonEntity = await this.personService.create(createOwnerDto.person,)
-    owner.person = person
     return await this.saveEntities(owner)?.[0];;
   }
 
-  findAll() {
-    return this.repository.find({
-      relations:['person'],
-    })
+  findAll(): Promise<OwnerEntity[]> {
+    return this.repository.find()
   }
 
-  findOne(id: number) {
-    return this.repository.findOne({
-      where: { id },
-      relations: ['person'],
-    });
+  findOne(id: number): Promise<OwnerEntity> {
+    return this.repository.findOne({where: { id }});
   }
 
-  async update(id: number, updateOwnerDto: UpdateOwnerDto) {
+  async update(id: number, updateOwnerDto: UpdateOwnerDto): Promise<OwnerEntity> {
     const owner = await this.repository.findOne({ where: { id } });
+    if (!owner){
+      throw new NotFoundException('Owner found ');
+    }
+    Object.assign(owner,updateOwnerDto)
+    return this.repository.save(owner);
   }
 
   async remove(id: number) {

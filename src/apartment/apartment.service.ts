@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateApartmentDto } from './dto/create-apartment.dto';
 import { UpdateApartmentDto } from './dto/update-apartment.dto';
+import {changeOwnerDto} from './dto/change-owner.dto';
 import { BaseService } from 'src/@core/base-service';
 import { ApartmentEntity } from './entities/apartment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +12,8 @@ import { ApartmentTypeService } from 'src/apartment-type/apartment-type.service'
 import { ApartmentTypeEntity } from 'src/apartment-type/entities/apartment-type.entity';
 import { ApartmentOptionService } from 'src/apartment-option/apartment-option.service';
 import { ApartmentOptionEntity } from 'src/apartment-option/entities/apartment-option.entity';
+import { OwnerEntity } from 'src/owner/entities/owner.entity';
+import { OwnerService } from 'src/owner/owner.service';
 
 @Injectable()
 export class ApartmentService extends BaseService<ApartmentEntity>{
@@ -21,6 +24,7 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
     protected readonly buildingService: BuildingService,
     protected readonly apartmentTypeService: ApartmentTypeService,
     protected readonly apartmentOptionService: ApartmentOptionService,
+    protected readonly ownerSerive: OwnerService,
     protected readonly dataSource: DataSource,
   ){
     super(dataSource);
@@ -54,10 +58,26 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
     return (await this.saveEntities(apartment))?.[0];
   }
 
+  async changeOwner(id:number,changeOwnerDto:changeOwnerDto){
+    const apartment: ApartmentEntity = await this.repository.findOne({ where: { id } });
+    const owner: OwnerEntity = await this.ownerSerive.findOne(changeOwnerDto.ownerId);
+
+    apartment.owner = owner
+
+    return await this.saveEntities(apartment)?.[0]
+  }
+
+ /*  async addTenants(id:number, updateApartmentDto:UpdateApartmentDto):Promise<ApartmentEntity>{
+      const apartement:ApartmentEntity = await this.repository.findOne({where: {id}})
+      if (apartement.principalTenant === null)
+      return apartement;
+  } */
+
+
   async findAll(): Promise<ApartmentEntity[]> {
     try {
         const apartments: ApartmentEntity[] = await this.repository.find({
-            relations: ['building', 'type','options'],
+            relations: ['building', 'type','options','owner'],
         });
         return apartments;
     } catch (error) {
@@ -70,7 +90,7 @@ export class ApartmentService extends BaseService<ApartmentEntity>{
   async findOne(id: number):Promise<ApartmentEntity> {
     const result:ApartmentEntity = await this.repository.findOne({
       where: {id},
-      relations: ['type', 'building','options'],
+      relations: ['type', 'building','options','owner'],
     })
     return result;
   }

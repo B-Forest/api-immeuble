@@ -3,7 +3,13 @@ import { CreatePersonDto } from "src/person/dto/create-person.dto";
 
 export class CreateOwnerDto {
     @ApiProperty()
-    person: CreatePersonDto;
+    firstName: string;
+
+    @ApiProperty()
+    lastName: string;
+
+    @ApiProperty()
+    phoneNumber: string;
 
     @ApiProperty()
     account: number;

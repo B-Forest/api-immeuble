@@ -81,7 +81,7 @@ export class BuildingService extends BaseService<BuildingEntity> {
   ): Promise<BuildingEntity> {
     const building = await this.buildingRepository.findOne({ where: { id } });
     if (!building) {
-      throw new NotFoundException('Batiment introuvable');
+      throw new NotFoundException('Building not found');
     }
     Object.assign(building, updateBuildingDto);
     return this.buildingRepository.save(building);

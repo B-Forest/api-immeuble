@@ -3,7 +3,7 @@ import { ApartmentTypeEntity } from 'src/apartment-type/entities/apartment-type.
 import { BuildingEntity } from 'src/building/entities/building.entity';
 import { OwnerEntity } from 'src/owner/entities/owner.entity';
 import { TenantEntity } from 'src/tenant/entities/tenant.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn,ManyToMany, JoinTable } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn,ManyToMany, JoinTable, OneToOne, JoinColumn } from 'typeorm';
 
 
 @Entity('Apartement')
@@ -32,4 +32,8 @@ export class ApartmentEntity {
   @ManyToMany(() => ApartmentOptionEntity)
     @JoinTable()
     options: ApartmentOptionEntity[]
+
+  @OneToOne(()=> TenantEntity,{nullable:true} )
+  @JoinColumn()
+  principalTenant:TenantEntity | null;
 }
