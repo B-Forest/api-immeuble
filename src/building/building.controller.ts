@@ -52,6 +52,24 @@ export class BuildingController {
     return this.buildingService.numberOfApart(+id);
   }
 
+  @Get('/tenants/:id')
+  @ApiOperation({summary: 'Get number of tenants in the building'})
+  nbTenants(@Param('id') id:string){
+    return this.buildingService.nbTenant(+id);
+  }
+
+  @Get('/under/:id')
+  @ApiOperation({summary: 'Get number of apartment underoccupy in the building'})
+  underOccupy(@Param('id') id:string){
+    return this.buildingService.underOccupy(+id);
+  }
+
+  @Get('/over/:id')
+  @ApiOperation({summary: 'Get number of apartment overoccupy in the building'})
+  overOccupy(@Param('id') id:string){
+    return this.buildingService.overOccupy(+id);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an building' })
   remove(@Param('id') id: string) {
