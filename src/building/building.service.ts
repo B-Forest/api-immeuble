@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
 import { BaseService } from 'src/@core/base-service';
@@ -12,12 +12,15 @@ import { BuildingHasFacilityEntity } from 'src/building_has_facility/entities/bu
 import { CommonFacilityEntity } from 'src/common-facility/entities/common-facility.entity';
 import { AddressEntity } from 'src/address/entities/address.entity';
 import { AddFacilityDto } from './dto/add-facilities.dto';
+import { ApartmentService } from 'src/apartment/apartment.service';
 
 @Injectable()
 export class BuildingService extends BaseService<BuildingEntity> {
   constructor(
     @InjectRepository(BuildingEntity)
     private readonly buildingRepository: Repository<BuildingEntity>,
+    @Inject(forwardRef(()=>ApartmentService))
+    private readonly apartmentService:ApartmentService,
     private readonly addressService: AddressService,
     private readonly facilityService: BuildingHasFacilityService,
     private readonly commonService: CommonFacilityService,
@@ -71,8 +74,31 @@ export class BuildingService extends BaseService<BuildingEntity> {
   findOne(id: number): Promise<BuildingEntity> {
     return this.buildingRepository.findOne({
       where: { id },
-      relations: ['facilities', 'address'],
+      relations: ['facilities', 'address','apartments'],
     });
+  }
+
+  async numberOfApart(id:number){
+    const building = await this.findOne(id)
+    let numberAppartment = building.apartments.length
+    return numberAppartment
+  }
+
+  async occupationPourcentage(id:number){
+    const building = await this.findOne(id)
+    console.log(building.apartments[0].id)
+    console.log("LAAAAAAAAAAAAAAAA")
+    let numberApartmentOccupy = 0
+    for (let i = 0; i < building.apartments.length; i++){
+      const apartment = await this.apartmentService.findOne(building.apartments[i].id);
+      const numberTenants = apartment.tenants.length;
+      if (numberTenants > 0){
+          numberApartmentOccupy++;
+      }
+  }  
+    const pourcentage = (numberApartmentOccupy*100)/building.apartments.length
+    const pourcentageOccupy = `${Number(pourcentage.toFixed(1))}%`;
+    return pourcentageOccupy
   }
 
   async update(

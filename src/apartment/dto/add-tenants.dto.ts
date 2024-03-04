@@ -1,6 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { CreateTenantDto } from "src/tenant/dto/create-tenant.dto";
 
-export class CreateTenantDto {
+
+
+export class addTenantsDto {
     @ApiProperty()
     firstName: string;
 
