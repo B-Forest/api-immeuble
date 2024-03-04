@@ -4,6 +4,8 @@ import { CreateApartmentDto } from './dto/create-apartment.dto';
 import { UpdateApartmentDto } from './dto/update-apartment.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { changeOwnerDto } from './dto/change-owner.dto';
+import { addTenantsDto } from './dto/add-tenants.dto';
+
 
 @ApiTags('Appartments')
 @Controller('apartment')
@@ -28,10 +30,16 @@ export class ApartmentController {
     return this.apartmentService.findOne(+id);
   }
 
-  @Put(':id')
+  @Patch('/owner/:id')
   @ApiOperation({ summary: 'Define/Change the owner of one apartment' })
   changeOwner(@Param('id') id: string, @Body() changeOwnerDto: changeOwnerDto){
     return this.apartmentService.changeOwner(+id, changeOwnerDto)
+  }
+
+  @Patch('/tenants/:id')
+  @ApiOperation({ summary: 'Add tenants of one apartment' })
+  addTenant(@Param('id') id: string, @Body() addTenantsDto: addTenantsDto){
+    return this.apartmentService.addTenant(+id, addTenantsDto)
   }
 
   @Patch(':id')

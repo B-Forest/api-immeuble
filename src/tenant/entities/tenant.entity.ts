@@ -6,9 +6,6 @@ import { OneToOne, JoinColumn, Column, ManyToOne, ChildEntity } from 'typeorm';
 @ChildEntity('Tenant')
 export class TenantEntity extends PersonEntity {
   
-  @Column()
-  isPrincipal: boolean;
-  
   @ManyToOne(() => ApartmentEntity, (apartment) => apartment.tenants)
   apartment: ApartmentEntity;
 }

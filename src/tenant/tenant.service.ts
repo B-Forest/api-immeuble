@@ -22,7 +22,8 @@ export class TenantService extends BaseService<TenantEntity> {
   async create(createTenantDto: CreateTenantDto): Promise<TenantEntity> {
     const tenant:TenantEntity = new TenantEntity();
     Object.assign(tenant, createTenantDto);
-    return await this.saveEntities(tenant)?.[0];;
+    await this.saveEntities(tenant)?.[0];
+    return tenant;
   }
 
   findAll(): Promise<TenantEntity[]> {

@@ -16,6 +16,9 @@ export class ApartmentEntity {
 
   @Column()
   door: number;
+
+  @Column()
+  rent: number;
     
   @ManyToOne(() => BuildingEntity, building => building.apartments)
   building: BuildingEntity;

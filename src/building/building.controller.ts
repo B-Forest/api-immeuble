@@ -33,11 +33,23 @@ export class BuildingController {
   findOne(@Param('id') id: string) {
     return this.buildingService.findOne(+id);
   }
-
+  
   @Patch(':id')
   @ApiOperation({ summary: 'Update an building' })
   update(@Param('id') id: string, @Body() updateBuildingDto: UpdateBuildingDto) {
     return this.buildingService.update(+id, updateBuildingDto);
+  }
+
+  @Get('/pourcentage/:id')
+  @ApiOperation({summary: 'Get pourcentage of occupy apartment in the building'})
+  occupationPourcentage(@Param('id') id:string){
+    return this.buildingService.occupationPourcentage(+id);
+  }
+
+  @Get('/number/:id')
+  @ApiOperation({summary: 'Get number of apartments in the building'})
+  numberOfApart(@Param('id') id:string){
+    return this.buildingService.numberOfApart(+id);
   }
 
   @Delete(':id')
