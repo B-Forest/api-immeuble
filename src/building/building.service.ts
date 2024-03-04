@@ -86,8 +86,6 @@ export class BuildingService extends BaseService<BuildingEntity> {
 
   async occupationPourcentage(id:number){
     const building = await this.findOne(id)
-    console.log(building.apartments[0].id)
-    console.log("LAAAAAAAAAAAAAAAA")
     let numberApartmentOccupy = 0
     for (let i = 0; i < building.apartments.length; i++){
       const apartment = await this.apartmentService.findOne(building.apartments[i].id);
@@ -99,6 +97,41 @@ export class BuildingService extends BaseService<BuildingEntity> {
     const pourcentage = (numberApartmentOccupy*100)/building.apartments.length
     const pourcentageOccupy = `${Number(pourcentage.toFixed(1))}%`;
     return pourcentageOccupy
+  }
+
+  async nbTenant(id:number){
+    const building = await this.findOne(id)
+    let nbTenant = 0
+    for (let i = 0; i < building.apartments.length; i++){
+      const apartment = await this.apartmentService.findOne(building.apartments[i].id);
+      const numberTenants = apartment.tenants.length;
+      nbTenant = nbTenant + numberTenants
+    }
+    return nbTenant;
+  }
+
+  async underOccupy(id:number){
+    const building = await this.findOne(id)
+    let nbApartUnder = 0
+    for (let i = 0; i < building.apartments.length; i++){
+      const apartment = await this.apartmentService.findOne(building.apartments[i].id);
+      if (apartment.type.capacity > apartment.tenants.length){
+        nbApartUnder ++;
+      }
+    }
+    return nbApartUnder
+  }
+
+  async overOccupy(id:number){
+    const building = await this.findOne(id)
+    let nbApartOver = 0
+    for (let i = 0; i < building.apartments.length; i++){
+      const apartment = await this.apartmentService.findOne(building.apartments[i].id);
+      if (apartment.type.capacity < apartment.tenants.length){
+        nbApartOver ++;
+      }
+    }
+    return nbApartOver
   }
 
   async update(
